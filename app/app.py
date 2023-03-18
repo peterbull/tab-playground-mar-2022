@@ -25,7 +25,7 @@ test_df = pd.read_csv(path/"test.csv")
 sample_df = pd.read_csv(path/"sample_submission.csv")
 
 # %% ../traffic-flow.ipynb 9
-comb_df = pd.concat([train_df, test_df])
+comb_df = pd.concat([train_df, test_df]).reset_index(drop=True)
 
 # %% ../traffic-flow.ipynb 11
 comb_df['date'] = pd.to_datetime(comb_df.time)

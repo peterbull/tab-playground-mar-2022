@@ -35,27 +35,25 @@ comb_df['date'] = pd.to_datetime(comb_df.time)
 comb_df['time_of_day'] = comb_df.date.dt.time
 comb_df['date'] = comb_df.date.dt.date
 
-# %% ../traffic-flow.ipynb 14
-comb_df['time_of_day'] = pd.to_timedelta(comb_df.time_of_day.astype(str))
-comb_df['date'] = pd.to_datetime(comb_df.date)
+# %% ../traffic-flow.ipynb 15
+# comb_df['time_of_day'] = pd.to_timedelta(comb_df.time_of_day.astype(str))
 
-
-# %% ../traffic-flow.ipynb 16
+# %% ../traffic-flow.ipynb 20
 train_idxs = np.where(train_df.index <= (round(len(train_df) * .8)))
 valid_idxs = np.where(train_df.index >= len(train_idxs[0]))
 test_idxs = np.where(comb_df.index > train_df.index.max())
 
-# %% ../traffic-flow.ipynb 17
+# %% ../traffic-flow.ipynb 21
 dep_var = 'congestion'
 
-# %% ../traffic-flow.ipynb 19
+# %% ../traffic-flow.ipynb 23
 procs = [Categorify, FillMissing, Normalize]
 cont, cat = cont_cat_split(comb_df, 1, dep_var=dep_var)
 train_val_splits = (list(train_idxs[0]), list(valid_idxs[0]))
 
-# %% ../traffic-flow.ipynb 20
+# %% ../traffic-flow.ipynb 24
 to = TabularPandas(comb_df, procs, cat, cont, y_names=dep_var, splits=train_val_splits)
 
-# %% ../traffic-flow.ipynb 22
+# %% ../traffic-flow.ipynb 30
 xs, y = to.train.xs, to.train.y
 valid_xs, valid_y = to.valid.xs, to.valid.y

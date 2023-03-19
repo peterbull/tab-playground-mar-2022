@@ -4,43 +4,43 @@
 __all__ = ['comp', 'path', 'train_df', 'test_df', 'sample_df', 'comb_df', 'train_idxs', 'valid_idxs', 'test_idxs', 'dep_var',
            'procs', 'cont', 'cat', 'train_val_splits', 'to', 'xs', 'y', 'valid_xs', 'valid_y']
 
-# %% ../traffic-flow.ipynb 3
+# %% ../traffic-flow.ipynb 4
 from fastai.tabular.all import *
 
 from sklearn.ensemble import RandomForestRegressor
 
-# %% ../traffic-flow.ipynb 4
+# %% ../traffic-flow.ipynb 5
 try: import fastkaggle
 except ModuleNotFoundError:
     !pip install -Uq fastkaggle
 
 from fastkaggle import *
 
-# %% ../traffic-flow.ipynb 5
+# %% ../traffic-flow.ipynb 6
 comp = 'tabular-playground-series-mar-2022'
 path = setup_comp(comp, install='fastai')
 
-# %% ../traffic-flow.ipynb 7
-train_df = pd.read_csv(path/"train.csv")
-test_df = pd.read_csv(path/"test.csv")
-sample_df = pd.read_csv(path/"sample_submission.csv")
+# %% ../traffic-flow.ipynb 8
+train_df = pd.read_csv(path/"train.csv", low_memory=False)
+test_df = pd.read_csv(path/"test.csv", low_memory=False)
+sample_df = pd.read_csv(path/"sample_submission.csv", low_memory=False)
 
-# %% ../traffic-flow.ipynb 9
+# %% ../traffic-flow.ipynb 10
 comb_df = pd.concat([train_df, test_df]).reset_index(drop=True)
 
-# %% ../traffic-flow.ipynb 11
+# %% ../traffic-flow.ipynb 12
 comb_df['date'] = pd.to_datetime(comb_df.time)
 
-# %% ../traffic-flow.ipynb 12
+# %% ../traffic-flow.ipynb 13
 comb_df['time_of_day'] = comb_df.date.dt.time
 comb_df['date'] = comb_df.date.dt.date
 
-# %% ../traffic-flow.ipynb 13
+# %% ../traffic-flow.ipynb 14
 comb_df['time_of_day'] = pd.to_timedelta(comb_df.time_of_day.astype(str))
 comb_df['date'] = pd.to_datetime(comb_df.date)
 
 
-# %% ../traffic-flow.ipynb 15
+# %% ../traffic-flow.ipynb 16
 train_idxs = np.where(train_df.index <= (round(len(train_df) * .8)))
 valid_idxs = np.where(train_df.index >= len(train_idxs[0]))
 test_idxs = np.where(comb_df.index > train_df.index.max())
@@ -56,6 +56,6 @@ train_val_splits = (list(train_idxs[0]), list(valid_idxs[0]))
 # %% ../traffic-flow.ipynb 20
 to = TabularPandas(comb_df, procs, cat, cont, y_names=dep_var, splits=train_val_splits)
 
-# %% ../traffic-flow.ipynb 21
+# %% ../traffic-flow.ipynb 22
 xs, y = to.train.xs, to.train.y
 valid_xs, valid_y = to.valid.xs, to.valid.y
